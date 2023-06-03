@@ -1,0 +1,77 @@
+<?php 
+
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "test";
+
+$conn = mysqli_connect($servername,$username,$password,$dbname);
+
+if($conn){
+    echo "connection success";
+}else{
+    die("connectionFailed : ".mysqli_connect_error());
+}
+
+/* prepared statement for insert */
+
+$preStat = mysqli_prepare($conn,"INSERT INTO prepared_crud VALUES (?,?,?,?)");
+mysqli_stmt_bind_param($preStat,"dsss",$id,$first_name,$last_name,$email);
+$first_name = "srikanth1";
+$last_name = "aare1";
+$email = "aare1@gmail.com";
+
+$res = mysqli_stmt_execute($preStat);
+
+
+if($res){
+    echo "record inserted successfully";
+}else{
+    echo mysqli_stmt_error($preStat);
+}
+
+/* end */
+
+/* prepared statement for get */
+
+$stat = mysqli_prepare($conn,"SELECT * FROM prepared_crud WHERE last_name=?");
+mysqli_stmt_bind_param($stat,"s",$lastname);
+$lastname = "aare";
+$res1 = mysqli_stmt_execute($stat);
+$results = mysqli_stmt_get_result($stat);
+
+// foreach($results as $row){
+//     var_dump($row);
+// }
+
+while($row = mysqli_fetch_assoc($results)){
+    //var_dump($row);
+}
+
+/* end */
+
+/* prepared statement for update */
+
+$stat2 = mysqli_prepare($conn,"UPDATE prepared_crud SET last_name=? WHERE id=?");
+mysqli_stmt_bind_param($stat2,"sd",$lastname2,$id);
+$lastname2 = "aaresrisri";
+$id=2;
+$res2 = mysqli_stmt_execute($stat2);
+var_dump($res2);
+
+/* end */
+
+/* prepared statement for delete */
+
+$stat3 = mysqli_prepare($conn,"DELETE FROM prepared_crud WHERE last_name=? ");
+mysqli_stmt_bind_param($stat3,"s",$lastname3);
+$lastname3 = "aare2";
+$res3 = mysqli_stmt_execute($stat3);
+var_dump($res3);
+
+/* end */
+
+
+mysqli_close($conn);
+
+?>
